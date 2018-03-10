@@ -5,22 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
     <title>Document</title>
 </head>
 <body>
     reached index.html
     <script>
 
-        
         var socket = io.connect("http://localhost:3009");
 
         function clientHasJoined() {
             socket.emit('clientHasJoined');
         }
 
-        
+//        function sendMessage() {
+//          var msg = document.getElementById("msgbox").value;
+//          console.log(msg);
+//          socket.emit('messageSent', msg);
+//        }
+
+        jQuery(function($){
+            var $chat = $('#cht');
+            var $messageForm = $('#msgform');
+            var $messageBox = $('#msgbox');
+
+            $messageForm.submit(function(e){
+                e.preventDefault();
+                socket.emit('messageSent', $messageBox.val());
+                $messageBox.val('');
+            });
+
+            socket.on('sendMessageToAllClients', function (data) {
+                $chat.append("<li><b>" + data.id + " </b> : " + data.msg + "</li><br />");
+            });
+        })
+
     </script>
 
     <button onclick="clientHasJoined()">join</button>
+    <div id="chat">
+        <ul id="cht"></ul>
+    </div>
+
+    <form id="msgform">
+        <input type="text" name="message" id="msgbox"><br>
+        <input type="submit" value="Send">
+    </form>
 </body>
 </html>

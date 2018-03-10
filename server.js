@@ -20,4 +20,8 @@ io.on('connection', function (socket) {
     socket.on('clientHasJoined', function () {
        console.log("Client has joined with id= "+socket.id); 
     });
+
+    socket.on('messageSent', function (msg) {
+        io.emit('sendMessageToAllClients', {msg:msg, id:socket.id});
+    })
 });
