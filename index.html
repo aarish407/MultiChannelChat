@@ -42,6 +42,7 @@
   <body>
     <script>
         
+        var admin= false;
 
         var socket = io.connect("http://localhost:3009");
 
@@ -77,6 +78,10 @@
         
         socket.on('recieveClientArray', function (clients) {
             console.log(clients);   
+        });
+
+        socket.on('youAreTheAdmin', function () {
+            admin= true;
         });
 
     </script>

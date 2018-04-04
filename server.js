@@ -32,6 +32,8 @@ io.on('connection', function (socket) {
        if(numberOfClients == 0)
        {
            admin= clientDetails;
+
+           socket.emit('youAreTheAdmin');
        } 
 
        numberOfClients++;
