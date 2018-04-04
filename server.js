@@ -29,21 +29,26 @@ io.on('connection', function (socket) {
 
         clients.push(clientDetails);
 
-       if(numberOfClients == 0)
-       {
-           admin= clientDetails;
+        if(numberOfClients == 0) {
+            admin= clientDetails;
+            socket.emit('youAreTheAdmin');
+        } 
 
-           socket.emit('youAreTheAdmin');
-       } 
-
-       numberOfClients++;
+        numberOfClients++;
+        console.log(clients);
+       
     });
+
+    socket.on('sendDetailsofAllOnline', function (clients) {
+        io.emit('receiveDetailsOfOnlineUsers', clients);
+    })
 
     socket.on('messageSent', function (msg) {
         io.emit('sendMessageToAllClients', {msg:msg, id:socket.id});
-    })
+    });
 });
 
 function sendClientArrayToEveryone() {
     io.emit('recieveClientArray', clients);
 }
+

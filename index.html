@@ -43,7 +43,7 @@
     <script>
         
         var admin= false;
-
+        var clients = [];
         var socket = io.connect("http://localhost:3009");
 
         function clientHasJoined() {
@@ -55,6 +55,19 @@
             };
             socket.emit('clientHasJoined',clientDetails);
         }
+
+        socket.on('recieveClientArray', function (data) {
+            clients = data;
+            console.log(clients);                
+            var user;
+            var item;
+            console.log(typeof(clients));
+            for(i=0; i<clients.length; i++){
+                item += "<li><b>"+clients[i].username+"</b></li>";
+            }
+            document.getElementById('onlineusers').innerHTML = item;
+        });
+
 
         jQuery(function ($) {
             var $chat = $('#cht');
@@ -68,29 +81,50 @@
             });
 
             socket.on('sendMessageToAllClients', function (data) {
-                $chat.append("<li class='list-group-item'><b>" + data.id + " </b> : " + data.msg + "</li><br />");
+                $chat.append("<li class='list-group-item'><b>" + data.username + " </b> : " + data.msg + "</li><br />");
             });
+           
+            //$onlineUsers.append("<li class='list-group-item'><b>" +clients.id +"</li><br />");
+        
         })
 
-        // function displayAllOnline() {
-        //     socket.emit('sendDetailsofAllOnline');
-        // }
-        
-        socket.on('recieveClientArray', function (clients) {
-            console.log(clients);   
+            socket.emit('sendDetailsofAllOnline');
+
+        socket.on('receiveDetailsOfOnlineUsers', function(clients){
+
         });
 
+
+
+    //    $(document).ready(function(){
+    //      $("#displayonlineusers").click(function(){
+    //        socket.emit('sendDetailsofAllOnline');
+    //            socket.on('receiveDetailsOfOnlineUsers', function(clients){
+    //              var list = "";
+    //            var $onlineUsers = $('#onlineusers');
+    //          for(i=0; i<clients.length; i++){
+    //            list +="<li class='list-group-item'><b>"+clients[i].username+"</li><br />";
+    //      }
+    //    $onlineUsers.append(list);
+    //            });
+    //      });
+    //  });
+
+    //function displayAllOnline() {
+    //  socket.emit('sendDetailsofAllOnline');
+    //}
+        
         socket.on('youAreTheAdmin', function () {
             admin= true;
         });
 
     </script>
 
-    <button name="Join" id="join" class="btn btn-light" onclick="clientHasJoined()">Join</button>
-
-    <!-- <button onclick="displayAllOnline()">Display those who are online</button> -->
+    <button name="Join" id="join" onclick="clientHasJoined()">Join</button>
 
     <ul class="list-group" id="cht"></ul>
+    <h4>Online users</h4>
+    <ul class="list-group" id="onlineusers"></ul>
 
 
     <!-- FORM FOR SENDING MESSAGES -->
