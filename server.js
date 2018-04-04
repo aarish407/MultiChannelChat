@@ -39,10 +39,6 @@ io.on('connection', function (socket) {
        
     });
 
-    socket.on('sendDetailsofAllOnline', function (clients) {
-        io.emit('receiveDetailsOfOnlineUsers', clients);
-    })
-
     socket.on('messageSent', function (msg) {
         io.emit('sendMessageToAllClients', {msg:msg, id:socket.id});
     });
