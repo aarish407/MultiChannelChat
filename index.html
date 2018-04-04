@@ -41,9 +41,18 @@
   </head>
   <body>
     <script>
+        
+
         var socket = io.connect("http://localhost:3009");
+
         function clientHasJoined() {
-            socket.emit('clientHasJoined');
+            var username = prompt("Enter your username");
+            console.log("username= "+username);
+            var clientDetails= {
+                username: username,
+                id: socket.id
+            };
+            socket.emit('clientHasJoined',clientDetails);
         }
 
         jQuery(function ($) {
@@ -62,9 +71,19 @@
             });
         })
 
+        // function displayAllOnline() {
+        //     socket.emit('sendDetailsofAllOnline');
+        // }
+        
+        socket.on('recieveClientArray', function (clients) {
+            console.log(clients);   
+        });
+
     </script>
 
-    <a name="Join" id="join" class="btn btn-light" role="button" onclick="clientHasJoined">Join</a>
+    <button name="Join" id="join" class="btn btn-light" onclick="clientHasJoined()">Join</button>
+
+    <!-- <button onclick="displayAllOnline()">Display those who are online</button> -->
 
     <ul class="list-group" id="cht"></ul>
 
@@ -77,6 +96,7 @@
         </div>
         <button type="submit" class="btn btn-default">Submit</button>
     </form>
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

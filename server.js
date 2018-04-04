@@ -14,14 +14,34 @@ server.listen(process.env.PORT || 3009, '0.0.0.0', function () {
     console.log('Listening on ' + server.address().port);
 });
 
+var clients= [];
+
+var numberOfClients= 0, admin;
+
+setInterval(sendClientArrayToEveryone, 30);
+
 io.on('connection', function (socket) {
     console.log("Socket connection established");
 
-    socket.on('clientHasJoined', function () {
-       console.log("Client has joined with id= "+socket.id); 
+    socket.on('clientHasJoined', function (clientDetails) {
+       console.log("Client has joined with id= "+socket.id);
+    //    clients[numberOfClients]= clientDetails;
+
+        clients.push(clientDetails);
+
+       if(numberOfClients == 0)
+       {
+           admin= clientDetails;
+       } 
+
+       numberOfClients++;
     });
 
     socket.on('messageSent', function (msg) {
         io.emit('sendMessageToAllClients', {msg:msg, id:socket.id});
     })
 });
+
+function sendClientArrayToEveryone() {
+    io.emit('recieveClientArray', clients);
+}
